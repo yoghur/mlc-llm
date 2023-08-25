@@ -122,8 +122,9 @@ endif()
 if (MLC_LLM_INSTALL_STATIC_LIB)
   target_link_libraries(
     mlc_chat_cli PRIVATE mlc_llm_static tokenizers_cpp sentencepiece-static tokenizers_c)
-  target_link_libraries(
-    mlc_chat_cli PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,tvm_runtime>")
+  # target_link_libraries(
+  #   mlc_chat_cli PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,tvm_runtime>")
+  target_link_libraries(mlc_chat_cli PRIVATE mlc_llm_static sentencepiece-static tokenizers tvm_runtime)
 else()
   target_link_libraries(mlc_chat_cli PUBLIC mlc_llm)
 endif()
@@ -135,12 +136,6 @@ target_link_libraries(mlc_llm_module PRIVATE tokenizers_cpp)
 
 set_property(TARGET mlc_llm_module APPEND PROPERTY LINK_OPTIONS "${MLC_VISIBILITY_FLAG}")
 set_property(TARGET mlc_llm APPEND PROPERTY LINK_OPTIONS "${MLC_VISIBILITY_FLAG}")
-
-find_program(CARGO_EXECUTABLE cargo)
-
-if(NOT CARGO_EXECUTABLE)
-    message(FATAL_ERROR "Cargo is not found! Please install cargo.")
-endif()
 
 # when this option is on,
 # we install all static lib deps into lib
